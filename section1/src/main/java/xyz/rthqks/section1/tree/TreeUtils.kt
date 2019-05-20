@@ -1,11 +1,16 @@
 package xyz.rthqks.section1.tree
 
-import com.squareup.moshi.*
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import kotlin.random.Random
 
 
 object TreeUtils {
     private const val MAX_NODE_INT_VALUE = 1000
+    private const val MARK_CHILD = 0
+    private const val MARK_END_CHILD = 1
 
     fun generateTree(depth: Int, maxChildren: Int): Tree<Int> {
         val tree = Tree(Random.nextInt(MAX_NODE_INT_VALUE))
@@ -13,18 +18,18 @@ object TreeUtils {
         var node = tree.root
 
         // ensure tree reaches passed in depth
-        for (i in 1 until depth) {
-
+        // tree.root is level 1
+        for (i in 2..depth) {
             node = addRandomChild(node)
-
-            if (depth - i > 0) {
-                // add random subtree to new node like normal
-                generateSubtree(node, depth - i, maxChildren)
-            }
         }
 
-        // we ensured we reached proper depth, but need to potentially add more random children
-        generateSubtree(tree.root, depth - 1, maxChildren)
+        // now that we have a path of `depth`, add random subtrees to those nodes up to maxChildren
+        node = tree.root
+        for (i in 2..depth) {
+            generateSubtree(node, depth - i, maxChildren)
+            node = node.children[0]
+        }
+
         return tree
     }
 
@@ -32,10 +37,10 @@ object TreeUtils {
         // subtract children size if node already has children from ensuring desired depth
         val numChildren = Random.nextInt(maxChildren + 1) - parent.children.size
 
-        for (i in 0 until numChildren) {
+        for (i in 1..numChildren) {
             val node = addRandomChild(parent)
 
-            if (depth > 1) {
+            if (depth > 0) {
                 generateSubtree(node, depth - 1, maxChildren)
             }
         }
@@ -51,107 +56,68 @@ object TreeUtils {
         return node
     }
 
-    fun serializeJson(tree: Tree<Int>): String {
-        val nodeType =
-            Types.newParameterizedTypeWithOwner(Tree::class.java, Tree.Node::class.java, Int::class.javaObjectType)
-
-        val moshi = Moshi.Builder()
-            .add(nodeType, NodeAdapter())
-            .build()
-
-        val type = Types.newParameterizedType(Tree::class.java, Int::class.javaObjectType)
-        return moshi.adapter<Tree<Int>>(type).toJson(tree)
+    fun serialize(node: Tree.Node<Int>, sb: StringBuilder = StringBuilder(), indent: String = ""): String {
+        sb.append(indent).append('(').append(node.data.toString())
+        if (node.children.isEmpty()) {
+            sb.append(')')
+        } else {
+            node.children.forEach {
+                sb.append("\n")
+                serialize(it, sb, "$indent  ")
+            }
+            sb.append("\n").append(indent).append(")")
+        }
+        return sb.toString()
     }
 
-    fun serializeEncode(tree: Tree<Int>, encoder: (Int) -> Int): String {
-        val nodeType =
-            Types.newParameterizedTypeWithOwner(Tree::class.java, Tree.Node::class.java, Int::class.javaObjectType)
-
-        val moshi = Moshi.Builder()
-            .add(nodeType, NodeAdapter(encoder))
-            .build()
-
-        val type = Types.newParameterizedType(Tree::class.java, Int::class.javaObjectType)
-        return moshi.adapter<Tree<Int>>(type).toJson(tree)
+    fun serializeToStream(tree: Tree<Int>, stream: OutputStream) {
+        serializeToStream(tree.root, DataOutputStream(EncryptedOutputStream(stream, 0xCAFEBAE)))
     }
 
-    fun deserialize(json: String): Tree<Int> {
+    private fun serializeToStream(node: Tree.Node<Int>, stream: DataOutputStream) {
+        stream.writeInt(node.data)
 
-        val nodeType =
-            Types.newParameterizedTypeWithOwner(Tree::class.java, Tree.Node::class.java, Int::class.javaObjectType)
-
-        val moshi = Moshi.Builder()
-            .add(nodeType, NodeAdapter())
-            .build()
-
-        val type = Types.newParameterizedType(Tree::class.java, Int::class.javaObjectType)
-        val tree = moshi.adapter<Tree<Int>>(type).fromJson(json)!!
-        // we didn't serialize parents (cyclic structure), so we reset parent pointers here
-        setParents(tree.root)
-        return tree
-    }
-
-    fun deserializeDecode(json: String, decoder: (Int) -> Int): Tree<Int> {
-        val nodeType =
-            Types.newParameterizedTypeWithOwner(Tree::class.java, Tree.Node::class.java, Int::class.javaObjectType)
-
-        val moshi = Moshi.Builder()
-            .add(nodeType, NodeAdapter(decoder = decoder))
-            .build()
-
-        val type = Types.newParameterizedType(Tree::class.java, Int::class.javaObjectType)
-        val tree = moshi.adapter<Tree<Int>>(type).fromJson(json)!!
-        // we didn't serialize parents (cyclic structure), so we reset parent pointers here
-        setParents(tree.root)
-        return tree
-    }
-
-    private fun setParents(node: Tree.Node<Int>) {
         node.children.forEach {
-            it.parent = node
-            setParents(it)
+            stream.writeByte(MARK_CHILD)
+            serializeToStream(it, stream)
+        }
+
+        stream.writeByte(MARK_END_CHILD)
+    }
+
+    fun deserializeFromStream(stream: InputStream): Tree<Int> {
+        val tree = Tree(0)
+        deserializeFromStream(tree.root, DataInputStream(EncryptedInputStream(stream, 0xCAFEBAE)))
+        return tree
+    }
+
+    private fun deserializeFromStream(node: Tree.Node<Int>, stream: DataInputStream) {
+        node.data = stream.readInt()
+        var type = stream.read()
+
+        while (type == MARK_CHILD) {
+            val child = Tree.Node<Int>()
+            child.parent = node
+            child.children = mutableListOf()
+            node.children.add(child)
+            deserializeFromStream(child, stream)
+            type = stream.read()
         }
     }
 }
 
-class NodeAdapter(
-    private val encoder: (Int) -> Int = { it },
-    private val decoder: (Int) -> Int = { it }
-) : JsonAdapter<Tree.Node<Int>>() {
-
-    private val nodeType =
-        Types.newParameterizedTypeWithOwner(Tree::class.java, Tree.Node::class.java, Int::class.javaObjectType)
-
-    private val listAdapter = Moshi.Builder()
-        .add(nodeType, this)
-        .build()
-        .adapter<List<Tree.Node<Int>>>(
-            Types.newParameterizedType(
-                List::class.java,
-                nodeType
-            )
-        )
-
-    override fun fromJson(reader: JsonReader): Tree.Node<Int>? {
-        val node = Tree.Node<Int>()
-        reader.beginObject()
-        reader.nextName()
-        node.data = decoder.invoke(reader.nextInt())
-        reader.nextName()
-        node.children = listAdapter.fromJson(reader)
-        reader.endObject()
-        return node
+class EncryptedOutputStream(private val out: OutputStream, private val secret: Int) : OutputStream() {
+    override fun write(b: Int) {
+        out.write(b xor secret)
     }
+}
 
-    override fun toJson(writer: JsonWriter, value: Tree.Node<Int>?) {
-        value?.let {
-            writer.beginObject()
-            writer.name("data")
-            writer.value(encoder.invoke(it.data))
-            writer.name("children")
-            listAdapter.toJson(writer, it.children)
-            writer.endObject()
-        }
+class EncryptedInputStream(private val input: InputStream, private val secret: Int) : InputStream() {
+    override fun read(): Int {
+        val b = input.read()
+        val enc = (b xor secret)
+//         we're only xoring a byte at a time :\
+        return enc and 0x000000ff
     }
 
 }

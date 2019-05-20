@@ -22,7 +22,7 @@ public class Tree<T> {
 
     public static class Node<T> {
         public T data;
-        public transient Node parent;
+        public Node parent;
         public List<Node<T>> children;
 
         @Override

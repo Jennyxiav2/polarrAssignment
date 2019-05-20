@@ -1,9 +1,9 @@
 package xyz.rthqks.polarrassignment
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import xyz.rthqks.section1.Section1Activity
 
 class MainActivity : AppCompatActivity() {
