@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Polarr Assignment</string>
+    <string name="depth">Depth</string>
+    <string name="generate_tree">Generate Tree</string>
+    <string name="depth_label">Depth of generated tree:</string>
+    <string name="num_children_label">Maximum number of children</string>
+    <string name="tree_raw_text">Raw</string>
+    <string name="tree_encoded_text">Encoded</string>
+    <string name="tree_decoded_text">Decoded</string>
+</resources>

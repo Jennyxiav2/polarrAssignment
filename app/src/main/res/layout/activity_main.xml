@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:text="@string/section_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/section_1"
+        android:text="@string/section_1"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:text="@string/section_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/section_2"
+        android:text="@string/section_2"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:text="@string/section_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/section_3"
+        android:text="@string/section_3"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:text="@string/section_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/section_4"
+        android:text="@string/section_4"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
