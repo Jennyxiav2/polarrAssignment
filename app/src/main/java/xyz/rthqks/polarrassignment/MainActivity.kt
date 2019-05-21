@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import xyz.rthqks.section1.Section1Activity
+import xyz.rthqks.section2.Section2Activity
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,5 +16,11 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.section_1).setOnClickListener {
             startActivity(Intent(this, Section1Activity::class.java))
         }
+
+        findViewById<View>(R.id.section_2).setOnClickListener {
+            startActivity(Intent(this, Section2Activity::class.java))
+        }
+
+        startActivity(Intent(this, Section2Activity::class.java))
     }
 }
