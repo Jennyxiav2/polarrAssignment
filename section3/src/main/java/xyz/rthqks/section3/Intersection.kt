@@ -94,7 +94,7 @@ class Intersection {
     companion object {
         const val TAG = "Intersection"
         const val WAITING_TO_YELLOW_DELAY = 5L
-        const val NS_YELLOW_DELAY = 5L
+        const val NS_YELLOW_DELAY = 3L
         const val EW_YELLOW_DELAY = 3L
         const val EW_GREEN_DELAY = 7L
     }
