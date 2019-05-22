@@ -1,6 +1,6 @@
 # Polarr Assignment
 
-For this assignment I decided to package all the sections into a demo Android app.  The app has 5 gradle modules, the main app module, the 4 section modules, and a benchmarking module.  I did this to hopefully make it easier to see the functionality of the exercises and also to put the exercises into an Android context.  I tried to keep most of the code together in a couple classes.  In a couple cases there is some glue code in a `ViewModel` that connects the demo UI to the implementations.  Also, I mostly used kotlin instead of java.
+For this assignment I decided to package all the sections into a demo Android app.  The app has 6 gradle modules, the main app module, the 4 section modules, and a benchmarking module.  I did this to hopefully make it easier to see the functionality of the exercises and also to put the exercises into an Android context.  I tried to keep most of the code together in a couple classes.  In a couple cases there is some glue code in a `ViewModel` that connects the demo UI to the implementations.  Also, I mostly used kotlin instead of java.
 
 ## Main App
 The main app depends on `section1`, `section2`, and `section3`; it is just a single `Activity` with 3 buttons that each start a demo `Activity` for their respective sections.  I did not get to making a demo for the SDK in section4.
