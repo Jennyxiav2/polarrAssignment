@@ -33,11 +33,12 @@ Of all the sections, I feel like section 4 could take the most time and effort. 
 
 For hiding the implementation, I created an `interface` and exposed a way to get an instance of that interface and implemented the interface in a private class.  I setup `proguard` rules to obfuscate all code except the interface definition and other public classes (Matrix2x2).  
 
-For the benchmarking script I used a new feature of Instumented Tests, expressly for benchmarking (https://developer.android.com/studio/profile/benchmark).  You write an instrumentation test like normal, and use a `BenchmarkRule` to run a block of code.  The framework handles warm up and timing of repeated runs of the code block.  It runs like a standard test and outputs results to the console. There is also `Debug.startMethodTracing("sample")` that will give you fine-grained information about all function calls and CPU usage, although I did not get to implementing that.  There are also rich tools for interactively monitoring performance in Android Studio, but that is not scriptable.
+For the benchmarking script I used a new feature of Instumented Tests, expressly for benchmarking (https://developer.android.com/studio/profile/benchmark).  You write an instrumentation test like normal, and use a `BenchmarkRule` to run a block of code.  The framework handles warm up and timing of repeated runs of the code block.  It runs like a standard test and outputs results to the console. There is also `Debug.startMethodTracing("sample")` that will give you fine-grained information about all function calls and CPU usage, although I did not get to implementing that.  There are also rich tools for interactively monitoring performance in Android Studio, but that is not scriptable.  Benchmarking code is in the `benchmark` module.  Right now it only benchmarks section4, but could also be used for the other modules.  Since these are standard tests they can also be run on device farms to collect real-world, device specific performance data.
 
 For securing the SDK, I did not do anything other than proguard obfuscation.  It is possible to encrypt dalvik bytecode and decrypt it before loading, but that is rather involved.  One thing I do like to do is encrypt any configuration data you ship with a library and encrypt any data the library persists.
 
 Thanks for taking the time to review my assignment, please let me know if you have any questions.
+
 Nash
 
 
