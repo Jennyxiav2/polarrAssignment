@@ -140,7 +140,7 @@ class GLHistogram {
         return histogramData.map { it.array() }.toTypedArray()
     }
 
-    fun createFrameBuffer(texture: Int): Int {
+    private fun createFrameBuffer(texture: Int): Int {
         val frameBufferHandle = IntArray(1)
         GLES31.glGenFramebuffers(1, frameBufferHandle, 0)
         GLES31.glBindFramebuffer(GLES31.GL_FRAMEBUFFER, frameBufferHandle[0])
@@ -156,10 +156,7 @@ class GLHistogram {
         return frameBufferHandle[0]
     }
 
-    fun createTexture(
-        width: Int,
-        height: Int
-    ): Int {
+    private fun createTexture(width: Int, height: Int): Int {
         val textureHandle = IntArray(1)
 
         GLES31.glGenTextures(1, textureHandle, 0)

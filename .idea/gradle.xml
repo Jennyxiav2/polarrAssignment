@@ -9,12 +9,15 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/benchmark" />
             <option value="$PROJECT_DIR$/section1" />
             <option value="$PROJECT_DIR$/section2" />
             <option value="$PROJECT_DIR$/section3" />
+            <option value="$PROJECT_DIR$/section4" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>

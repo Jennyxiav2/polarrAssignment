@@ -1,1 +1,1 @@
-include ':section1', ':app', ':section2', ':section3'
+include ':section1', ':app', ':section2', ':section3', ':section4', ':benchmark'
